@@ -2,6 +2,9 @@
 
 #include <map>
 
+// Testing class forward declaration
+class IntervalMapTest;
+
 namespace amby {
 
 template <typename K, typename V> class interval_map {
@@ -20,6 +23,9 @@ public:
             return init_;
         return std::prev(it)->second;
     }
+
+    // Used in testing
+    friend class ::IntervalMapTest;
 
 private:
     V init_;

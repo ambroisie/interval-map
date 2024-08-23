@@ -69,6 +69,27 @@ protected:
     void SetUp() override {
         map = map_type{0};
     }
+
+    void TearDown() override {
+        check_canonicity();
+    }
+
+    void check_canonicity() const {
+        // Consecutive map entries must not contain the same value
+        for (auto it = map.underlying_.begin(); it != map.underlying_.end();
+             ++it) {
+            const auto next = std::next(it, 1);
+            if (next == map.underlying_.end())
+                break;
+            EXPECT_NE(it->second, next->second);
+        }
+
+        // The first entry must not contain the initial value
+        if (const auto it = map.underlying_.begin();
+            it != map.underlying_.end()) {
+            EXPECT_NE(it->second, map.init_);
+        }
+    }
 };
 
 TEST_F(IntervalMapTest, minimal_interface) {
