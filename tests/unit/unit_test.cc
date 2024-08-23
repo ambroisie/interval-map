@@ -4,6 +4,8 @@
 
 #include <type_traits>
 
+#include "model.hh"
+
 template <typename T> class KeyInterface {
 public:
     explicit KeyInterface(T val) : underlying_(val) {}
@@ -63,16 +65,39 @@ protected:
     using key_type = char;
     using value_type = int;
     using map_type = amby::interval_map<key_type, value_type>;
+    using model_type = Model<key_type, value_type>;
 
     map_type map{0};
+    model_type model{0};
 
     void SetUp() override {
         map = map_type{0};
+        model = model_type{0};
     }
 
     void TearDown() override {
+        check();
+    }
+
+    void assign(key_type const& begin, key_type const& end,
+                value_type const& val) {
+        map.assign(begin, end, val);
+        model.assign(begin, end, val);
+    }
+
+    void check() const {
+        check_ranges();
         check_canonicity();
     }
+
+    // Compare against the fake 'Model' implementation
+    void check_ranges() const {
+        auto i = std::numeric_limits<key_type>::min();
+        for (; i < std::numeric_limits<key_type>::max(); ++i) {
+            ASSERT_EQ(map[i], model[i]) << "(i: " << +i << ")";
+        }
+        ASSERT_EQ(map[i], model[i]) << "(i: " << +i << ")";
+    };
 
     void check_canonicity() const {
         // Consecutive map entries must not contain the same value
@@ -101,25 +126,12 @@ TEST_F(IntervalMapTest, minimal_interface) {
     map.assign(Key(0), Key(1), Value(1));
 }
 
-TEST_F(IntervalMapTest, no_insertion) {
-    for (int i = std::numeric_limits<char>::min();
-         i <= std::numeric_limits<char>::max(); ++i) {
-        ASSERT_EQ(map[i], 0);
-    }
-}
+TEST_F(IntervalMapTest, no_insertion) {}
 
 TEST_F(IntervalMapTest, insert_begin_equal_end) {
-    map.assign(0, 0, 1);
-    for (int i = std::numeric_limits<char>::min();
-         i <= std::numeric_limits<char>::max(); ++i) {
-        ASSERT_EQ(map[i], 0);
-    }
+    assign(0, 0, 1);
 }
 
 TEST_F(IntervalMapTest, insert_begin_bigger_than_end) {
-    map.assign(1, 0, 1);
-    for (int i = std::numeric_limits<char>::min();
-         i <= std::numeric_limits<char>::max(); ++i) {
-        ASSERT_EQ(map[i], 0);
-    }
+    assign(1, 0, 1);
 }
