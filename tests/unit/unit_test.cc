@@ -66,3 +66,29 @@ TEST(interval_map, minimal_interface) {
     ASSERT_EQ(map[Key(0)], Value(0));
     map.assign(Key(0), Key(1), Value(1));
 }
+
+TEST(interval_map, no_insertion) {
+    auto map = amby::interval_map<char, int>{0};
+    for (int i = std::numeric_limits<char>::min();
+         i <= std::numeric_limits<char>::max(); ++i) {
+        ASSERT_EQ(map[i], 0);
+    }
+}
+
+TEST(interval_map, insert_begin_equal_end) {
+    auto map = amby::interval_map<char, int>{0};
+    map.assign(0, 0, 1);
+    for (int i = std::numeric_limits<char>::min();
+         i <= std::numeric_limits<char>::max(); ++i) {
+        ASSERT_EQ(map[i], 0);
+    }
+}
+
+TEST(interval_map, insert_begin_bigger_than_end) {
+    auto map = amby::interval_map<char, int>{0};
+    map.assign(1, 0, 1);
+    for (int i = std::numeric_limits<char>::min();
+         i <= std::numeric_limits<char>::max(); ++i) {
+        ASSERT_EQ(map[i], 0);
+    }
+}

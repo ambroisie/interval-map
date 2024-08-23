@@ -9,6 +9,8 @@ public:
     interval_map(V const& init) : init_(init) {}
 
     void assign(K const& begin, K const& end, V const& val) {
+        if (!(begin < end))
+            return;
         // TODO: implement
     }
 
