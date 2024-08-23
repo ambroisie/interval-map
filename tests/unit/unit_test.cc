@@ -58,7 +58,20 @@ static_assert(std::is_same_v<
               ValueInterface<int>,
               decltype(std::numeric_limits<ValueInterface<int>>::lowest())>);
 
-TEST(interval_map, minimal_interface) {
+class IntervalMapTest : public testing::Test {
+protected:
+    using key_type = char;
+    using value_type = int;
+    using map_type = amby::interval_map<key_type, value_type>;
+
+    map_type map{0};
+
+    void SetUp() override {
+        map = map_type{0};
+    }
+};
+
+TEST_F(IntervalMapTest, minimal_interface) {
     using Key = KeyInterface<char>;
     using Value = ValueInterface<int>;
 
@@ -67,16 +80,14 @@ TEST(interval_map, minimal_interface) {
     map.assign(Key(0), Key(1), Value(1));
 }
 
-TEST(interval_map, no_insertion) {
-    auto map = amby::interval_map<char, int>{0};
+TEST_F(IntervalMapTest, no_insertion) {
     for (int i = std::numeric_limits<char>::min();
          i <= std::numeric_limits<char>::max(); ++i) {
         ASSERT_EQ(map[i], 0);
     }
 }
 
-TEST(interval_map, insert_begin_equal_end) {
-    auto map = amby::interval_map<char, int>{0};
+TEST_F(IntervalMapTest, insert_begin_equal_end) {
     map.assign(0, 0, 1);
     for (int i = std::numeric_limits<char>::min();
          i <= std::numeric_limits<char>::max(); ++i) {
@@ -84,8 +95,7 @@ TEST(interval_map, insert_begin_equal_end) {
     }
 }
 
-TEST(interval_map, insert_begin_bigger_than_end) {
-    auto map = amby::interval_map<char, int>{0};
+TEST_F(IntervalMapTest, insert_begin_bigger_than_end) {
     map.assign(1, 0, 1);
     for (int i = std::numeric_limits<char>::min();
          i <= std::numeric_limits<char>::max(); ++i) {
