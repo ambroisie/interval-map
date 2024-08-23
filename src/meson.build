@@ -1,0 +1,1 @@
+interval_map_dep = declare_dependency(include_directories: 'include')
