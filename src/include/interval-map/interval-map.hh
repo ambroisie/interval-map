@@ -14,7 +14,14 @@ public:
     void assign(K const& begin, K const& end, V const& val) {
         if (!(begin < end))
             return;
-        // TODO: implement
+
+        auto const end_val = (*this)[end];
+        underlying_.erase(underlying_.lower_bound(begin),
+                          underlying_.upper_bound(end));
+        if (!((*this)[begin] == val))
+            underlying_.insert({begin, val});
+        if (!((*this)[end] == end_val))
+            underlying_.insert({end, end_val});
     }
 
     V const& operator[](K const& key) const {
