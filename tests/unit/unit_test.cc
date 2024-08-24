@@ -135,3 +135,70 @@ TEST_F(IntervalMapTest, insert_begin_equal_end) {
 TEST_F(IntervalMapTest, insert_begin_bigger_than_end) {
     assign(1, 0, 1);
 }
+
+TEST_F(IntervalMapTest, insert_one_range) {
+    assign(std::numeric_limits<key_type>::min(), 0, 1);
+}
+
+TEST_F(IntervalMapTest, insert_non_overlapping_ranges) {
+    assign(std::numeric_limits<key_type>::min(), 0, 1);
+    assign(10, std::numeric_limits<key_type>::max(), 2);
+}
+
+TEST_F(IntervalMapTest, insert_up_to_max) {
+    assign(std::numeric_limits<key_type>::min(),
+           std::numeric_limits<key_type>::max(), 1);
+}
+
+TEST_F(IntervalMapTest, insert_range_right_after) {
+    assign(0, 10, 1);
+    assign(10, 20, 1);
+}
+
+TEST_F(IntervalMapTest, insert_range_right_before) {
+    assign(10, 20, 1);
+    assign(0, 10, 1);
+}
+
+TEST_F(IntervalMapTest, insert_range_middle) {
+    assign(0, 10, 1);
+    assign(20, 30, 1);
+    assign(10, 20, 1);
+}
+
+TEST_F(IntervalMapTest, insert_range_inside_another) {
+    assign(0, 20, 1);
+    assign(5, 15, 2);
+}
+
+TEST_F(IntervalMapTest, insert_range_around_another) {
+    assign(5, 15, 2);
+    assign(0, 20, 1);
+}
+
+TEST_F(IntervalMapTest, insert_range_overlaps_many) {
+    assign(0, 10, 1);
+    assign(10, 20, 2);
+    assign(20, 30, 3);
+    assign(30, 40, 4);
+    assign(40, 50, 5);
+    assign(0, 50, -1);
+}
+
+TEST_F(IntervalMapTest, insert_range_overlaps_many_init_value) {
+    assign(0, 10, 1);
+    assign(10, 20, 2);
+    assign(20, 30, 3);
+    assign(30, 40, 4);
+    assign(40, 50, 5);
+    assign(0, 50, 0);
+}
+
+TEST_F(IntervalMapTest, insert_range_overlaps_many_oversize) {
+    assign(0, 10, 1);
+    assign(10, 20, 2);
+    assign(20, 30, 3);
+    assign(30, 40, 4);
+    assign(40, 50, 5);
+    assign(-10, 60, -1);
+}
