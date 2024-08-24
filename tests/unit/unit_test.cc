@@ -2,6 +2,7 @@
 
 #include <interval-map/interval-map.hh>
 
+#include <sstream>
 #include <type_traits>
 
 #include "model.hh"
@@ -86,8 +87,26 @@ protected:
     }
 
     void check() const {
+        SCOPED_TRACE(stringify_map());
+        SCOPED_TRACE(stringify_operations());
         check_ranges();
         check_canonicity();
+    }
+
+    std::string stringify_map() const {
+        std::ostringstream out;
+        out << "map: ";
+        for (const auto& [key, val] : map.underlying_)
+            out << "[" << +key << ": " << +val << "]";
+        return out.str();
+    }
+
+    std::string stringify_operations() const {
+        std::ostringstream out;
+        out << "ops: ";
+        for (const auto& [start, end, val] : model.ranges_)
+            out << "[" << +start << ":" << +end << " => " << +val << "]";
+        return out.str();
     }
 
     // Compare against the fake 'Model' implementation
