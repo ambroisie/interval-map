@@ -2,6 +2,7 @@
 
 #include <interval-map/interval-map.hh>
 
+#include <random>
 #include <sstream>
 #include <type_traits>
 
@@ -220,4 +221,45 @@ TEST_F(IntervalMapTest, insert_range_overlaps_many_oversize) {
     assign(30, 40, 4);
     assign(40, 50, 5);
     assign(-10, 60, -1);
+}
+
+TEST_F(IntervalMapTest, fuzzing_001) {
+    assign(-50, 20, 1);
+    assign(40, 80, 2);
+    assign(-100, -10, 3);
+}
+
+TEST_F(IntervalMapTest, fuzzing_002) {
+    assign(-100, 90, 1);
+    assign(0, 120, 2);
+    assign(-60, 60, 3);
+}
+
+TEST_F(IntervalMapTest, fuzzing_003) {
+    assign(-80, 70, 1);
+    assign(-50, 40, 2);
+    assign(-40, 20, 3);
+    assign(-110, -10, 4);
+}
+
+TEST_F(IntervalMapTest, randomized_test) {
+    auto const seed = []() {
+        std::random_device r;
+        return r();
+    }();
+    SCOPED_TRACE(seed);
+    auto random = std::mt19937_64(seed);
+
+    auto keys = std::uniform_int_distribution<key_type>(
+        std::numeric_limits<key_type>::min(),
+        std::numeric_limits<key_type>::max());
+    auto values = std::uniform_int_distribution<value_type>(0, 10);
+
+    for (auto i = 0; i < 1000; ++i) {
+        auto const start = keys(random);
+        auto const end = keys(random);
+        auto const value = values(random);
+        assign(start, end, value);
+        check();
+    }
 }
