@@ -35,7 +35,7 @@ public:
         if (insert_begin)
             it = underlying_.insert(it, {begin, val});
         // Get the proper upper-bound for `end`
-        it = (it == underlying_.end()) ? it : std::next(it);
+        it = (it == underlying_.end() || end < it->first) ? it : std::next(it);
         if (!(at_upper_bound(it) == end_val))
             underlying_.insert(it, {end, end_val});
     }

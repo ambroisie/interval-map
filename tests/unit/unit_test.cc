@@ -242,6 +242,12 @@ TEST_F(IntervalMapTest, fuzzing_003) {
     assign(-110, -10, 4);
 }
 
+TEST_F(IntervalMapTest, fuzzing_004) {
+    assign(-20, 120, 1);
+    assign(50, 110, 0);
+    assign(-120, 100, 0);
+}
+
 TEST_F(IntervalMapTest, randomized_test) {
     auto const seed = []() {
         std::random_device r;
